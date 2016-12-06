@@ -1,28 +1,54 @@
-
 class CLI
-
-  URL = "https://data.cityofnewyork.us/resource/cdpt-29ur.json"
-
-
-  def call
-    puts "Hello!"
+	def call
     # make farmers market objects
-    response = RestClient.get(URL)
-    data = JSON.parse(response)
-    data.each do |farmers_market|
-      FarmersMarket.new(farmers_market)
-    end
-    puts "Hello, we loaded all the NYC Farmers Markets. What borough would you like to search?"
-    borough = gets.strip
-    borough_markets = FarmersMarket.find_by_borough(borough)
-    borough_markets.each do |market|
-      market.about_me
-    end
-    binding.pry
+    #FD
+    welcome_message
+    DataFetcher.load
+    display_count_of_markets_by_borough
+    # binding.pry
+    #puts markes_location_stats
+    borough = get_user_borough_selection
+    @list_of_markets = FarmersMarket.find_by_borough(borough)
+    display_market_info(@list_of_markets)
+    day = get_user_day_selection
+    @market_by_day = FarmersMarket.find_by_day(day)
+    chosen_markets = @market_by_day & @list_of_markets
+    display_market_info(chosen_markets)
+  end
 
-    # Get information from user
-    # santize info
-    #
+  def get_user_borough_selection
+  	puts "What borough would you like to find farmers markets in?"
+  	borough = gets.strip
+  end
+
+  def get_user_day_selection
+  	puts "What day do you want to shop for delicious vegetables?"
+  	day = gets.strip
+  end
+
+# private
+
+  def display_market_info(market_list)
+   	market_list.each do |market|
+      puts market.about_me
+    end
+   end
+
+  def new_line
+  	puts "\n"
+  end
+
+  def welcome_message
+  	puts "Hello, welcome back to 2012. We can tell you all things about finding locally sourced foods in NYC"
+  	new_line
+  end
+
+  def display_count_of_markets_by_borough
+  	puts "We found #{FarmersMarket.all.count} markets.\n"
+  	FarmersMarket.count_by_boroughs.each do |key,value|
+  		puts "#{value} in #{key}"
+  	end
+  	new_line
   end
 
 end
