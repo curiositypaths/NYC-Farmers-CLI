@@ -1,19 +1,20 @@
 class CLI
+	attr_accessor :list_of_markets, :market_by_day
 	def call
-    # make farmers market objects
-    #FD
     welcome_message
-    DataFetcher.load
+    load_markets_data
     display_count_of_markets_by_borough
-    # binding.pry
-    #puts markes_location_stats
     borough = get_user_borough_selection
-    @list_of_markets = FarmersMarket.find_by_borough(borough)
-    display_market_info(@list_of_markets)
+    self.list_of_markets = FarmersMarket.find_by_borough(borough)
+    display_market_info(list_of_markets)
     day = get_user_day_selection
-    @market_by_day = FarmersMarket.find_by_day(day)
-    chosen_markets = @market_by_day & @list_of_markets
+    self.market_by_day = FarmersMarket.find_by_day(day)
+    chosen_markets = market_by_day & list_of_markets
     display_market_info(chosen_markets)
+  end
+
+  def load_markets_data
+  	DataFetcher.load
   end
 
   def get_user_borough_selection
@@ -22,11 +23,9 @@ class CLI
   end
 
   def get_user_day_selection
-  	puts "What day do you want to shop for delicious vegetables?"
+  	puts "\n\nWhat day do you want to shop for delicious vegetables?"
   	day = gets.strip
   end
-
-# private
 
   def display_market_info(market_list)
    	market_list.each do |market|

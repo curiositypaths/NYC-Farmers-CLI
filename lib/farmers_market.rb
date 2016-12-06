@@ -6,11 +6,9 @@ class FarmersMarket
 
 
   def initialize(attributes)
-    # attributes.each {|key, value| self.send(("#{key}="), value)}
     attributes.each do |key, value|
       self.send(("#{key}="), value.strip)
     end
-    #clean_up_day_data
     ALL << self
   end
 
@@ -23,12 +21,7 @@ class FarmersMarket
 	    array_of_days = string.split(" ")
 	    ranges = array_of_days.select{|day| day.include?("-")}
 	    array_of_ranges = ranges.collect {|range| range.split("-")}
-	    #r = dayified.first
-	    if find_day_within_range(day, array_of_ranges)
-	    	return true
-	    else
-	    	return false
-	   	end
+	    find_day_within_range(day, array_of_ranges)
 	  end
   end
 
@@ -39,13 +32,6 @@ class FarmersMarket
   		chosen_days_index = week_index(day)
   		chosen_days_index < end_index && chosen_days_index > start_index
 		end
-  	# first_day_index = DAYS_OF_THE_WEEK.index(r[0])
-	  #   last_day_index = DAYS_OF_THE_WEEK.index(r[1])
-	  #   chosen_days_index = DAYS_OF_THE_WEEK.index(day)
-	  #   true if chosen_days_index < last_day_index && chosen_days_index > first_day_index
-	  #   else
-	  #   	return false
-	  #  end
   end
 
   def self.week_index(day)
